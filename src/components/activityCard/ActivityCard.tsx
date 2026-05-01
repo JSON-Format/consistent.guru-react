@@ -50,18 +50,6 @@ const isTimeValid = (
 
 const getToday = (): string => getLocalDate();
 
-const isMissedDate = (day: string, activity: Activity, log?: HabitLog): boolean => {
-  const today = getToday();
-
-  if (day >= today) return false;
-
-  if (activity.created_at) {
-    const createdDate = activity.created_at.split("T")[0];
-    if (day < createdDate) return false;
-  }
-
-  return !!log && log.is_complete === false;
-};
 
 const getMonthGrid = (date: Date): (string | null)[] => {
   const year = date.getFullYear();
