@@ -108,7 +108,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onMark, onDelete 
   const todayLog = activity.habit_logs.find((log) => log.date === getToday());
   const done = todayLog?.is_complete || false;
  const isValidTime = isTimeValid(activity.scheduled_time, now);
-  const todayEntries = activity.habit_logs.filter((log) => log.date === getToday() && log.is_complete);
+  
 
   // Calendar functions
   const currentYear = new Date().getFullYear();
@@ -338,8 +338,7 @@ disabled={done || !isValidTime}
 };
 
               const isToday = day === getToday();
-              const isCompleted = log?.is_complete === true;
-const isMissed = isMissedDate(day, activity, log);
+            
 
               return (
                 <motion.div
