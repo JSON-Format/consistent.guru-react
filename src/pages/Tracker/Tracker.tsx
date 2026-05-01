@@ -7,7 +7,6 @@ import { supabase } from "../../lib/client";
 import Loader from "../../components/appLoader"
 import { useNavigate } from "react-router-dom";
 
-
 interface HabitLog {
   id: string;
   date: string;
