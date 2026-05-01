@@ -1,0 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 7%;
+    --foreground: 150 10% 92%;
+    --card: 220 18% 10%;
+    --card-foreground: 150 10% 92%;
+    --primary: 152 60% 52%;
+    --primary-foreground: 220 20% 7%;
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 150 10% 80%;
+    --muted: 220 15% 13%;
+    --muted-foreground: 220 10% 50%;
+    --accent: 152 60% 52%;
+    --accent-foreground: 220 20% 7%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 152 60% 52%;
+    --radius: 0.75rem;
+
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    --glow-primary: 0 0 40px hsl(152 60% 52% / 0.3);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+}
+
+
+
+
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-slower {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes gradient {
+  0%, 100% { 
+    background-position: 0% 50%;
+    text-shadow: var(--glow-primary);
+  }
+  50% { 
+    background-position: 100% 50%;
+    text-shadow: 0 0 20px hsl(152 60% 52% / 0.5);
+  }
+}
+
+@keyframes progress {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-spin-slower {
+  animation: spin-slower 12s linear infinite;
+}
+
+.animate-gradient {
+  background: linear-gradient(
+    90deg,
+    hsl(152 60% 52%),
+    hsl(152 70% 65%),
+    hsl(152 60% 52%)
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient 3s ease infinite;
+}
+
+.animate-progress {
+  animation: progress 2s ease-in-out infinite;
+}
+/* Custom scrollbar for notification panel */
+.notification-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notification-panel::-webkit-scrollbar-track {
+  background: rgba(82, 202, 125, 0.1);
+  border-radius: 4px;
+}
+
+.notification-panel::-webkit-scrollbar-thumb {
+  background: rgba(82, 202, 125, 0.3);
+  border-radius: 4px;
+}
+
+.notification-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(82, 202, 125, 0.5);
+}
+
+/* 🔥 STRONG OVERRIDE (IMPORTANT) */
+
+body .MuiDialog-paper {
+  background: #061319 !important;
+  color: white !important;
+}
+
+body .MuiPaper-root {
+  background: #061319 !important;
+  color: white !important;
+}
+
+/* clock background */
+body .MuiClock-root {
+  background: transparent !important;
+}
+
+/* numbers */
+body .MuiClockNumber-root {
+  color: white !important;
+}
+
+/* selected item */
+body .Mui-selected {
+  background-color: #4ade80 !important;
+  color: black !important;
+}
+
+/* clock hand */
+body .MuiClockPointer-root {
+  background-color: #4ade80 !important;
+}
+
+body .MuiClock-pin {
+  background-color: #4ade80 !important;
+}
+
+/* AM PM buttons */
+body .MuiPickersLayout-root button {
+  color: white !important;
+}
+
+/* OK / CANCEL */
+body .MuiButton-root {
+  color: #4ade80 !important;
+}
+/* 🔥 FORCE TEXT COLOR (FINAL FIX) */
+/* 🔥 REMOVE ALL BLUE FOCUS FROM MUI */
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #4ade80 !important;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.5) !important;
+}
+
+/* remove blue outline ring */
+.MuiOutlinedInput-root:focus-visible {
+  outline: none !important;
+}
+
+/* remove browser focus */
+.MuiInputBase-root:focus {
+  outline: none !important;
+}
+
+/* extra safety */
+input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+/* 🔥 REMOVE BLUE TEXT SELECTION */
+
+::selection {
+  background: #4ade80;
+  color: black;
+}
+
+::-moz-selection {
+  background: #4ade80;
+  color: black;
+}
+
+/* 🔥 FINAL BLUE BORDER REMOVE FIX */
+
+body .MuiPickersInputBase-root.Mui-focused fieldset {
+  border-color: #4ade80 !important;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.5) !important;
+}
+
+/* 🔥 REMOVE DEFAULT BLUE OUTLINE */
+body .MuiPickersInputBase-root.Mui-focused {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 🔥 EXTRA FORCE (MUI v6 fix) */
+body .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #4ade80 !important;
+}
+/* remove browser blue ring */
+*:focus {
+  outline: none !important;
+}
+
+/* 🔥 MUI TIME PICKER SCROLL - PREMIUM */
+.MuiMultiSectionDigitalClock-root::-webkit-scrollbar {
+  width: 4px;
+}
+
+.MuiMultiSectionDigitalClock-root::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 6px 0;
+}
+
+.MuiMultiSectionDigitalClock-root::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4ade80, #22c55e);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.MuiMultiSectionDigitalClock-root::-webkit-scrollbar-thumb:hover {
+  background: #4ade80;
+}
+
+/* 🔥 FIREFOX */
+.MuiMultiSectionDigitalClock-root {
+  scrollbar-width: thin;
+  scrollbar-color: #4ade80 transparent;
+}
+
