@@ -74,8 +74,12 @@ export const getSmartStreak = (activity: any) => {
   };
 
   // CURRENT STREAK
+  // let streak = 0;
+  // let i = 0;
   let streak = 0;
-  let i = 0;
+
+// 🔥 today complete illa na skip pannum
+let i = completedSet.has(getDate(0)) ? 0 : 1;
 
   while (i < 365) {
     const date = getDate(i);
@@ -114,20 +118,20 @@ export const getSmartStreak = (activity: any) => {
 
   // if (streak === 0) return 0;
   // 🔥 skip today if not completed
-if (streak === 0) {
-  let i = 1; // 👈 start from yesterday
+// if (streak === 0) {
+//   let i = 1; // 👈 start from yesterday
 
-  while (i < 365) {
-    const date = getDate(i);
+//   while (i < 365) {
+//     const date = getDate(i);
 
-    if (completedSet.has(date)) {
-      streak++;
-      i++;
-    } else break;
-  }
+//     if (completedSet.has(date)) {
+//       streak++;
+//       i++;
+//     } else break;
+//   }
 
-  return streak;
-}
+//   return streak;
+// }
 
   return applyAdvancedDecay(prevStreak, missCount, streak);
 };

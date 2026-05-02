@@ -89,7 +89,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onMark, onDelete 
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const calendarDays = useMemo(() => getMonthGrid(currentDate), [currentDate]);
   const [now, setNow] = useState(new Date());
-
+const [hovered, setHovered] = useState<string | null>(null);
  const streak = getSmartStreak(activity);
  const level = getActivityLevel(streak);
   const totalCompleted = activity.habit_logs.filter((log) => log.is_complete).length;
@@ -305,24 +305,29 @@ disabled={done || !isValidTime}
 
 
 
-              const formatHoverText = () => {
-  if (!log?.is_complete || !log.completed_time) return "";
-
-  const dateObj = new Date(log.date);
-  const timeObj = new Date(log.completed_time);
+const formatHoverText = () => {
+  const dateObj = new Date(day);
 
   const formattedDate = dateObj.toLocaleDateString([], {
     month: "short",
     day: "numeric",
   });
 
-  const formattedTime = timeObj.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
+  // ✅ completed (green)
+  if (log?.is_complete && log?.completed_time) {
+    const timeObj = new Date(log.completed_time);
 
-  return `${formattedDate} • ${formattedTime}`;
+    const formattedTime = timeObj.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return `${formattedDate} • ${formattedTime}`;
+  }
+
+  // 🔴 missed / ⚪ empty
+  return formattedDate;
 };
 
               const isToday = day === getToday();
@@ -332,7 +337,8 @@ disabled={done || !isValidTime}
                 <motion.div
                   key={day}
                   whileHover={{ scale: 1.05 }}
-                    title={log?.is_complete ? formatHoverText() : undefined}
+                  onMouseEnter={() => setHovered(day)}
+                  onMouseLeave={() => setHovered(null)}
                   className={`relative h-10 rounded-lg flex items-center justify-center text-sm font-medium transition-all duration-200 cursor-default
                     ${log?.is_complete === true
   ? "bg-primary text-primary-foreground shadow-sm"
@@ -344,6 +350,11 @@ disabled={done || !isValidTime}
                     ${isToday ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}
                   `}
                 >
+                  {hovered === day && (
+  <div className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-black text-white text-xs px-2 py-1 shadow-lg z-50">
+    {formatHoverText()}
+  </div>
+)}
                   {log?.is_complete === true ? (
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
