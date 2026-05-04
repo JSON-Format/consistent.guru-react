@@ -71,12 +71,14 @@ export default function RegisterPage() {
     if (loading) return;
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${import.meta.env.VITE_SITE_URL}/callback`,
-      },
-    });
+const siteUrl = window.location.origin;
+
+const { error } = await supabase.auth.signInWithOAuth({
+  provider: "google",
+  options: {
+    redirectTo: `${siteUrl}/callback`,
+  },
+});
 
     if (error) {
       showToast.error(error.message);
