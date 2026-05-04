@@ -7,6 +7,7 @@ import { FiClock } from "react-icons/fi";
 import { motion } from "framer-motion";
 import guru from "../../assets/guru-meditating.png"
 import { supabase } from "../../lib/client";
+import { useNavigate } from "react-router-dom";
 
 
 function isWithinTimeRange(taskTime: string, range = 1) {
@@ -26,6 +27,7 @@ function isWithinTimeRange(taskTime: string, range = 1) {
 }
 
 export default function HabitCreatePage() {
+  const navigate = useNavigate();
   const [breathPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
   const [timeValue, setTimeValue] = useState<Dayjs | null>(dayjs());
 
@@ -89,9 +91,9 @@ console.log("DB:", selectedTime);
 
   // 🔥 FINAL ROUTING LOGIC
   if (isWithinTimeRange(finalTime)) {
-    window.location.href = "/complete-habit";
+     navigate("/complete-habit");
   } else {
-    window.location.href = "/tracker";
+      navigate("/tracker");
   }
 };
 
