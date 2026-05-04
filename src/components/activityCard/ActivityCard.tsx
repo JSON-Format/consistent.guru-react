@@ -85,6 +85,19 @@ const formatTime12 = (time?: string): string => {
   });
 };
 
+const isMissedDate = (day: string, activity: Activity) => {
+  const today = getToday();
+
+  if (day > today) return false;
+
+  if (activity.created_at) {
+    const created = activity.created_at.split("T")[0];
+    if (day < created) return false;
+  }
+
+  return day < today;
+};
+
 const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onMark, onDelete }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const calendarDays = useMemo(() => getMonthGrid(currentDate), [currentDate]);
@@ -342,7 +355,7 @@ const formatHoverText = () => {
                   className={`relative h-10 rounded-lg flex items-center justify-center text-sm font-medium transition-all duration-200 cursor-default
                     ${log?.is_complete === true
   ? "bg-primary text-primary-foreground shadow-sm"
-  : log?.is_complete === false && day < getToday()
+  : log?.is_complete === false || isMissedDate(day, activity)
   ? "bg-destructive/20 text-destructive border border-destructive/30"
   : "bg-secondary/50 text-muted-foreground border border-border hover:border-primary/50"
 }
@@ -359,7 +372,7 @@ const formatHoverText = () => {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                  ) : log?.is_complete === false && day < getToday() ? (
+                  ) : log?.is_complete === false || isMissedDate(day, activity) ? (
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
