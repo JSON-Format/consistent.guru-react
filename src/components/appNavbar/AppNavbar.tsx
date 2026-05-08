@@ -76,9 +76,24 @@ const logout = async () => {
           </span>
         </div>
 
-        {/* 👤 Account */}
-       
 
+<div className="flex items-center gap-6 relative">
+
+    <p
+  onClick={() => navigate("/why-we-build-this")}
+  className="
+    text-1xl text-white
+    hover:text-primary
+    transition cursor-pointer
+    hidden sm:block
+    font-display font-semibold
+    
+  "
+>
+  Why We Built This
+</p>
+
+        {/* 👤 Account */}
           {/* Icon */}
           <div 
             onClick={(e) => {
@@ -86,6 +101,9 @@ const logout = async () => {
     setOpen(!open);
   }}
             className="p-1 rounded-full hover:bg-muted transition cursor-pointer border border-primary">
+
+              
+
             {user ? (
               <img
                 src={
@@ -139,6 +157,7 @@ const logout = async () => {
               </button>
             )}
 
+          </div>
           </div>
         </div>
     </nav>
