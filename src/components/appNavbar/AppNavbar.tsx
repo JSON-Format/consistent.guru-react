@@ -78,7 +78,6 @@ const logout = async () => {
 
 
 <div className="flex items-center gap-6 relative">
-
     <p
   onClick={() => navigate("/why-we-build-this")}
   className="
