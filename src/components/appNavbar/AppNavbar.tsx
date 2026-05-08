@@ -78,7 +78,6 @@ const logout = async () => {
 
         {/* 👤 Account */}
        
-
           {/* Icon */}
           <div 
             onClick={(e) => {
