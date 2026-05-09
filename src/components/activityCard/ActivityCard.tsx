@@ -3,6 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, Clock, Flame, Trophy, ChevronLeft, ChevronRight, Target } from "lucide-react";
 import { getSmartStreak } from "../../lib/streak";
 import { getActivityLevel } from "../../lib/level";
+import {
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  getDay,
+  format,
+} from "date-fns";
+
+import { formatInTimeZone } from "date-fns-tz";
 
 
 interface HabitLog {
@@ -28,7 +37,9 @@ interface ActivityCardProps {
 
 // Helper Functions
 const getLocalDate = (date: Date = new Date()): string => {
-  return date.toLocaleDateString("en-CA");
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  return formatInTimeZone(date, timezone, "yyyy-MM-dd");
 };
 
 const isTimeValid = (
@@ -52,21 +63,27 @@ const getToday = (): string => getLocalDate();
 
 
 const getMonthGrid = (date: Date): (string | null)[] => {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const firstDay = new Date(year, month, 1).getDay();
-  const totalDays = new Date(year, month + 1, 0).getDate();
+  const start = startOfMonth(date);
+  const end = endOfMonth(date);
 
   const days: (string | null)[] = [];
 
-  for (let i = 0; i < firstDay; i++) {
+  const firstDayIndex = getDay(start);
+
+  // Empty boxes
+  for (let i = 0; i < firstDayIndex; i++) {
     days.push(null);
   }
 
-  for (let i = 1; i <= totalDays; i++) {
-    const d = new Date(year, month, i);
-    days.push(getLocalDate(d));
-  }
+  // Month dates
+  const allDays = eachDayOfInterval({
+    start,
+    end,
+  });
+
+  allDays.forEach((d) => {
+    days.push(format(d, "yyyy-MM-dd"));
+  });
 
   return days;
 };
@@ -312,14 +329,21 @@ disabled={done || !isValidTime}
               if (!day) return <div key={index} className="h-10" />;
 
               const log = activity.habit_logs.find(
-  (l) => l.date?.slice(0, 10) === day
+  (l) => getLocalDate(new Date(l.date)) === day
 );
 
 
 
 
 const formatHoverText = () => {
-  const dateObj = new Date(day);
+  const [year, month, date] =
+  day.split("-").map(Number);
+
+const dateObj = new Date(
+  year,
+  month - 1,
+  date
+);
 
   const formattedDate = dateObj.toLocaleDateString([], {
     month: "short",
@@ -377,7 +401,7 @@ const formatHoverText = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   ) : (
-                    new Date(day).getDate()
+                   Number(day.split("-")[2])
                   )}
                 </motion.div>
               );

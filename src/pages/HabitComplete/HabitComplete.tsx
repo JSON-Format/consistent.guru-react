@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import { getSmartStreak } from "../../lib/streak";
 import { getActivityLevel } from "../../lib/level";
 import { useMemo } from "react";
+import { getLocalDate } from "../../lib/date";
 
 
 function isWithinTimeRange(taskTime: string, range = 1) {
@@ -108,7 +109,7 @@ setLogs(allLogs || []);
 // 💾 CACHE SAVE
 localStorage.setItem("habit_logs", JSON.stringify(allLogs || []));
 setLoading(false);
-    const today = new Date().toISOString().split("T")[0];
+    const today = getLocalDate();
 
     // 🔥 check today's log
     let { data: log } = await supabase
@@ -159,7 +160,7 @@ const handleClick = async () => {
   if (loading) return;
   setLoading(true);
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDate();
 
   // 🔥 safety check
 if (!isWithinTimeRange(habit.scheduled_time)) {

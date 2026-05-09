@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import guru from "../../assets/guru-meditating.png"
 import { supabase } from "../../lib/client";
 import { useNavigate } from "react-router-dom";
+import { getLocalDate } from "../../lib/date";
 
 
 function isWithinTimeRange(taskTime: string, range = 1) {
@@ -42,7 +43,7 @@ const handleCreateHabit = async () => {
   }
 
   const now = new Date().toISOString();
-  const today = new Date().toISOString().split("T")[0];
+ const today = getLocalDate();
 
   const { data: existingHabit } = await supabase
     .from("habits")
