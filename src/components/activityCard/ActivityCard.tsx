@@ -344,7 +344,6 @@ const dateObj = new Date(
   month - 1,
   date
 );
-
   const formattedDate = dateObj.toLocaleDateString([], {
     month: "short",
     day: "numeric",
