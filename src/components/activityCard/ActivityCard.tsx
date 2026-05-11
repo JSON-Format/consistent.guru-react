@@ -328,8 +328,8 @@ disabled={done || !isValidTime}
             {calendarDays.map((day, index) => {
               if (!day) return <div key={index} className="h-10" />;
 
-              const log = activity.habit_logs.find(
-  (l) => getLocalDate(new Date(l.date)) === day
+const log = activity.habit_logs.find(
+  (l) => l.date === day
 );
 
 

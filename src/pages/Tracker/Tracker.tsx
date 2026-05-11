@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { supabase } from "../../lib/client";
 import Loader from "../../components/appLoader"
 import { useNavigate } from "react-router-dom";
+import { getLocalDate } from "../../lib/date";
 
 interface HabitLog {
   id: string;
@@ -21,13 +22,6 @@ interface Activity {
   created_at?: string;
   habit_logs: HabitLog[];
 }
-
-
-
-const getToday = (): string => {
-  return new Date().toISOString().split("T")[0];
-};
-
 
 
 const TrackerPage: React.FC = () => {
@@ -102,7 +96,7 @@ useEffect(() => {
 
 
 const handleMark = async (habitId: string) => {
-  const today = getToday();
+const today = getLocalDate();
   const now = new Date().toISOString();
 
   // 🔍 check existing log
