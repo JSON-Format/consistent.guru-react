@@ -332,9 +332,6 @@ const log = activity.habit_logs.find(
   (l) => l.date === day
 );
 
-
-
-
 const formatHoverText = () => {
   const [year, month, date] =
   day.split("-").map(Number);
