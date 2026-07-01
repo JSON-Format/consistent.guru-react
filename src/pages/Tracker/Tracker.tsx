@@ -195,7 +195,7 @@ if (loading) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="min-h-screen bg-background px-4 py-14 sm:py-20"
+    className="min-h-screen bg-background px-3 sm:px-4 py-10 sm:py-20"
     >
       <div className="mx-auto w-full max-w-4xl">
 
@@ -206,7 +206,7 @@ if (loading) {
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-5xl sm:text-6xl md:text-7xl font-bold text-foreground mb-4"
+        className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-4"
         style={{ fontFamily: "var(--font-display)" }}
       >
         Stay Consistent
@@ -222,11 +222,11 @@ if (loading) {
         Track your daily habits. Every press counts.
       </motion.p>  
 
-      <div className="mb-8 flex justify-center gap-4">
+      <div className="mb-8 flex flex-col sm:flex-row justify-center gap-3">
 
   <button
     onClick={() => navigate("/")}
-    className="flex items-center gap-2 rounded-xl border border-border bg-card px-5 py-3 hover:border-primary hover:bg-primary/10 transition"
+    className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 hover:border-primary hover:bg-primary/10 transition"
   >
     <House size={18}/>
     Home
@@ -234,7 +234,7 @@ if (loading) {
 
   <button
     onClick={() => navigate("/create-habit")}
-    className="flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-primary-foreground hover:scale-105 transition"
+    className="w-full sm:w-auto flex items-center justify-center  gap-2 rounded-xl bg-primary px-5 py-3 text-primary-foreground hover:scale-105 transition"
   >
     <CirclePlus size={18}/>
     Create Habit
@@ -248,7 +248,7 @@ if (loading) {
       },
     })
   }
-    className="flex items-center gap-2 rounded-xl border border-border bg-card px-5 py-3 hover:border-yellow-500 hover:bg-yellow-500/10 transition"
+    className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 hover:border-yellow-500 hover:bg-yellow-500/10 transition"
   >
     <Trophy size={18}/>
     Level
@@ -264,7 +264,7 @@ if (loading) {
     className="mb-8 overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-card to-card shadow-xl"
   >
     {/* Header */}
-    <div className="flex items-center justify-between border-b border-border/50 p-5">
+    <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between border-b border-border/50 p-5">
    <div className="flex items-center gap-3">
   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/15">
     <Target className="h-6 w-6 text-emerald-500" />
@@ -299,10 +299,10 @@ if (loading) {
             scale: 1.01,
             y: -2,
           }}
-          className="flex items-center justify-between rounded-2xl border border-border bg-background/60 backdrop-blur-xl p-4 transition-all"
+          className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-border bg-background/60 backdrop-blur-xl p-4 transition-all"
         >
           {/* Left */}
-          <div className="flex items-center gap-4">
+         <div className="flex items-start gap-4 w-full">
 
             {/* Icon */}
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
@@ -311,11 +311,11 @@ if (loading) {
 
             {/* Text */}
             <div>
-              <h3 className="font-semibold text-lg text-foreground text-left">
+              <h3 className="font-semibold text-base sm:text-lg break-words text-foreground text-left">
                 {habit.name}
               </h3>
 
-              <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 <Clock3 className="w-4 h-4 text-emerald-500"/>
 
                 {new Date(
@@ -343,7 +343,7 @@ if (loading) {
               scale: 0.95,
             }}
             onClick={() => handleMark(habit.id)}
-            className="rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 px-6 py-3 font-semibold text-black shadow-lg shadow-green-500/30 transition-all"
+          className="w-full sm:w-auto whitespace-nowrap rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 px-6 py-3 font-semibold text-black shadow-lg shadow-green-500/30 transition-all"
           >
             ✓ Mark Complete
           </motion.button>
@@ -360,7 +360,7 @@ if (loading) {
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    className="rounded-3xl border border-dashed border-border bg-card p-16 text-center"
+   className="rounded-3xl border border-dashed border-border bg-card p-8 sm:p-12 md:p-16 text-center"
   >
     {/* Icon */}
     <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-primary/10">
@@ -368,19 +368,19 @@ if (loading) {
     </div>
 
     {/* Title */}
-    <h2 className="text-3xl font-bold text-foreground">
+    <h2 className="text-2xl sm:text-3xl font-bold  text-foreground">
       No Habits Found
     </h2>
 
     {/* Description */}
-    <p className="mt-3 text-muted-foreground max-w-md mx-auto">
+    <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-md mx-auto">
       You haven't created any habits yet. Start building consistency by creating your first habit.
     </p>
 
     {/* Button */}
     <button
       onClick={() => navigate("/create-habit")}
-      className="mt-8 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-primary-foreground font-semibold transition hover:scale-105"
+      className="mt-8 w-full sm:w-auto inline-flex justify-center items-center gap-2 rounded-xl bg-primary px-6 py-3 text-primary-foreground font-semibold transition hover:scale-105"
     >
       <CirclePlus size={20} />
       Create Habit
