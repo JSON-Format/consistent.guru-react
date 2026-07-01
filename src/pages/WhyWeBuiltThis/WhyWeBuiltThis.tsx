@@ -31,7 +31,7 @@ export default function ConsistentGuruManifesto() {
   };
 
   return (
-    <div className="min-h-screen bg-[#021b12] text-white overflow-x-hidden">
+    <div className="min-h-screen  text-white overflow-x-hidden">
       {/* Glow Background */}
       <div className="fixed inset-0 -z-10">
         <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[500px] md:w-[700px] h-[500px] md:h-[700px] bg-green-500/10 blur-[180px] rounded-full" />

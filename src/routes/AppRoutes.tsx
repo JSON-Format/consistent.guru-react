@@ -17,6 +17,8 @@ import HabitCreate from "../pages/HabitCreate";
 import HabitComplete from "../pages/HabitComplete";
 import Tracker from "../pages/Tracker";
 import WhyWeBuiltThis from "../pages/WhyWeBuiltThis"
+import Levels from "../pages/level";
+
 
 export default function AppRoutes() {
 
@@ -29,6 +31,13 @@ export default function AppRoutes() {
   path="/"
   element={<Home />}
 />
+
+<Route
+  path="level"
+  element={<Levels />}
+/>
+
+
 
       {/* 🔐 Auth */}
       <Route

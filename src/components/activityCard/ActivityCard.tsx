@@ -1,8 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trash2, Clock, Flame, Trophy, ChevronLeft, ChevronRight, Target } from "lucide-react";
+import { Trash2, Clock, Flame, Trophy, ChevronLeft, ChevronRight, Target, Lock } from "lucide-react";
 import { getSmartStreak } from "../../lib/streak";
-import { getActivityLevel } from "../../lib/level";
+import {
+  getActivityLevel,
+  getNextLevel,
+} from "../../lib/level";
 import {
   startOfMonth,
   endOfMonth,
@@ -102,7 +105,25 @@ const formatTime12 = (time?: string): string => {
   });
 };
 
-const isMissedDate = (day: string, activity: Activity) => {
+// const isMissedDate = (day: string, activity: Activity) => {
+//   const today = getToday();
+
+//   if (day > today) return false;
+
+//   if (activity.created_at) {
+//     const created = activity.created_at.split("T")[0];
+//     if (day < created) return false;
+//   }
+
+//   return day < today;
+// };
+
+
+const isMissedDate = (
+  day: string,
+  activity: Activity,
+  now: Date
+) => {
   const today = getToday();
 
   if (day > today) return false;
@@ -112,8 +133,38 @@ const isMissedDate = (day: string, activity: Activity) => {
     if (day < created) return false;
   }
 
-  return day < today;
+  // Previous days → Missed
+  if (day < today) return true;
+
+  // Today
+  if (day === today) {
+    const todayLog = activity.habit_logs.find(
+      (l) => l.date === today
+    );
+
+    // Already completed
+    if (todayLog?.is_complete) return false;
+
+    if (!activity.scheduled_time) return false;
+
+    const [h, m] = activity.scheduled_time.split(":").map(Number);
+
+    const scheduled = new Date();
+    scheduled.setHours(h, m, 0, 0);
+
+    // +1 hour
+    const after = new Date(
+      scheduled.getTime() + 60 * 60 * 1000
+    );
+
+   
+
+    return now > after;
+  }
+
+  return false;
 };
+
 
 const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onMark, onDelete }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -122,6 +173,10 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onMark, onDelete 
 const [hovered, setHovered] = useState<string | null>(null);
  const streak = getSmartStreak(activity);
  const level = getActivityLevel(streak);
+ const nextLevel = getNextLevel(streak);
+ const daysLeft = nextLevel
+  ? Math.max(0, nextLevel.minStreak - streak)
+  : 0;
   const totalCompleted = activity.habit_logs.filter((log) => log.is_complete).length;
   const todayLog = activity.habit_logs.find((log) => log.date === getToday());
   const done = todayLog?.is_complete || false;
@@ -187,9 +242,48 @@ const [hovered, setHovered] = useState<string | null>(null);
             <h2 className="text-xl sm:text-2xl font-bold text-foreground" style={{ fontFamily: "var(--font-display)" }}>
               {activity.name}
             </h2>
-            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary border border-primary/30">
+            {/* <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary border border-primary/30">
               {level.emoji} {level.title}
-            </span>
+            </span> */}
+            <div className="flex items-center gap-2 flex-wrap">
+
+  {/* Current Level */}
+  <span className="flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-3 py-1 text-xs font-semibold text-green-400">
+    {level.emoji} {level.title}
+  </span>
+
+  {/* Arrow */}
+  {nextLevel && (
+    <>
+      <ChevronRight
+        size={14}
+        className="text-slate-500"
+      />
+
+      {/* Locked Next Level */}
+ <div className="relative group">
+  <span className="flex items-center gap-2 rounded-full bg-slate-800 border border-slate-700 px-3 py-1 text-xs font-semibold text-slate-500 opacity-70 cursor-pointer">
+    <Lock size={12} />
+    <span className="text-sm">{nextLevel.emoji}</span>
+    <span>{nextLevel.title}</span>
+  </span>
+
+  <div className="absolute left-1/2 top-[-55px] -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-xs text-white opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none shadow-xl z-50">
+    {daysLeft === 0
+      ? `Unlock ${nextLevel.title}`
+      : `${daysLeft} more day${daysLeft > 1 ? "s" : ""} to unlock ${nextLevel.title}`}
+  </div>
+</div>
+    </>
+  )}
+
+  {!nextLevel && (
+    <span className="rounded-full bg-yellow-500/20 border border-yellow-500/30 px-3 py-1 text-xs font-bold text-yellow-400">
+      👑 MAX LEVEL
+    </span>
+  )}
+
+</div>
           </div>
           <p className="text-xs text-muted-foreground flex items-center gap-1">
             <Clock size={12} className="text-primary" />
@@ -326,11 +420,14 @@ disabled={done || !isValidTime}
             className="grid grid-cols-7 gap-2"
           >
             {calendarDays.map((day, index) => {
+              
               if (!day) return <div key={index} className="h-10" />;
 
 const log = activity.habit_logs.find(
   (l) => l.date === day
 );
+
+
 
 const formatHoverText = () => {
   const [year, month, date] =
@@ -375,7 +472,9 @@ const dateObj = new Date(
                   className={`relative h-10 rounded-lg flex items-center justify-center text-sm font-medium transition-all duration-200 cursor-default
                     ${log?.is_complete === true
   ? "bg-primary text-primary-foreground shadow-sm"
-  : log?.is_complete === false || isMissedDate(day, activity)
+  // : log?.is_complete === false || isMissedDate(day, activity)
+  : log?.is_complete === false ||
+isMissedDate(day, activity, now)
   ? "bg-destructive/20 text-destructive border border-destructive/30"
   : "bg-secondary/50 text-muted-foreground border border-border hover:border-primary/50"
 }
@@ -392,7 +491,8 @@ const dateObj = new Date(
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                  ) : log?.is_complete === false || isMissedDate(day, activity) ? (
+                  ) : log?.is_complete === false ||
+isMissedDate(day, activity, now) ? (
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>

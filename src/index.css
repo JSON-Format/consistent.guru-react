@@ -254,3 +254,12 @@ body .Mui-focused .MuiOutlinedInput-notchedOutline {
   scrollbar-color: #4ade80 transparent;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

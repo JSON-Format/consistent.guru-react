@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { supabase } from "../../lib/client";
+import { useNavigate } from "react-router-dom";
 import Meditating from "../../assets/guru-meditating.png"
 import Running from "../../assets/guru-running-new.png"
 import WakingUp from "../../assets/guru-waking-up.png"
@@ -13,6 +14,13 @@ import Journaling from "../../assets/guru-journaling.png"
 import ScreenLimit from "../../assets/guru-screen-limit.png"
 import { motion, AnimatePresence } from "framer-motion";
 import type { Variants } from "framer-motion";
+import dayjs, { Dayjs } from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { getLocalDate } from "../../lib/date";
+
+import Swal from "sweetalert2";
 interface Habit {
    id?: string;
   label: string;
@@ -22,6 +30,7 @@ interface Habit {
   color: string;
   isCustom?: boolean;
 }
+
 
 const defaultHabits: Habit[] = [
   {
@@ -117,9 +126,14 @@ const Image: React.FC<ImageProps> = ({ src, alt, className, style }) => {
 
 
 const HabitSelector: React.FC = () => {
+  const creatingRef = useRef(false);
+  const [creating, setCreating] = useState(false);
   const [habits, setHabits] = useState<Habit[]>(defaultHabits);
   const [index, setIndex] = useState<number>(2);
   const [selectedHabits, setSelectedHabits] = useState<number[]>([]);
+  const [habitTimes, setHabitTimes] = useState<
+  Record<number, Dayjs | null>
+>({});
   const [direction, setDirection] = useState<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
@@ -130,7 +144,7 @@ const HabitSelector: React.FC = () => {
     gradient: "from-purple-500 via-pink-500 to-red-500",
     color: "#8B5CF6",
   });
-
+const navigate = useNavigate();
   const colorOptions = [
     { gradient: "from-purple-500 via-pink-500 to-red-500", color: "#8B5CF6" },
     { gradient: "from-blue-500 via-cyan-500 to-teal-500", color: "#06B6D4" },
@@ -215,16 +229,200 @@ const active: Habit = isCustomHabitCard
 );
   };
 
-  const toggleHabit = (habitIndex: number): void => {
-    if (selectedHabits.includes(habitIndex)) {
-      setSelectedHabits(selectedHabits.filter((i: number) => i !== habitIndex));
-    } else {
-      setSelectedHabits([...selectedHabits, habitIndex]);
+const toggleHabit = (habitIndex: number): void => {
+  if (selectedHabits.includes(habitIndex)) {
+    setSelectedHabits(
+      selectedHabits.filter((i) => i !== habitIndex)
+    );
+  } else {
+    setSelectedHabits([...selectedHabits, habitIndex]);
+
+    setHabitTimes((prev) => ({
+      ...prev,
+      [habitIndex]: dayjs(),
+    }));
+  }
+};
+
+const createHabitsInBackground = async (): Promise<number> => {
+  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return 0;
+
+  const usedTimes = new Set<string>();
+  
+  let createdCount = 0;
+
+  const { data: existingHabits } = await supabase
+  .from("habits")
+  .select("id, name, scheduled_time")
+  .eq("user_id", user.id);
+
+if (!existingHabits) return 0;
+
+  for (const habitIndex of selectedHabits) {
+    const habit = habits[habitIndex];
+
+    const selectedTime =
+      (habitTimes[habitIndex] || dayjs()).format("HH:mm");
+
+      const displayTime =
+  (habitTimes[habitIndex] || dayjs()).format("hh:mm A");
+
+if (usedTimes.has(selectedTime)) {
+  await Swal.fire({
+    icon: "warning",
+    title: "Time Already Selected",
+    text: `${displayTime} is already selected for another habit.`,
+    confirmButtonColor: "#22c55e",
+  });
+
+  return 0;
+}
+
+
+
+const sameHabit = existingHabits.find(
+  (h) => h.name.toLowerCase() === habit.label.toLowerCase()
+);
+
+if (sameHabit) {
+  await Swal.fire({
+    icon: "warning",
+    title: "Habit Already Exists",
+    text: `${habit.label} habit already exists.`,
+    confirmButtonColor: "#22c55e",
+  });
+
+  return 0;
+}
+
+
+const sameTime = existingHabits.find(
+  (h) => h.scheduled_time === selectedTime
+);
+
+if (sameTime) {
+  await Swal.fire({
+    icon: "warning",
+    title: "Time Already Reserved",
+    text: `${displayTime} already has another habit.`,
+    confirmButtonColor: "#22c55e",
+  });
+
+  return 0;
+}
+
+
+usedTimes.add(selectedTime);
+
+
+
+
+    const { data: newHabit, error } = await supabase
+      .from("habits")
+      .insert({
+        user_id: user.id,
+        name: habit.label,
+        scheduled_time: selectedTime,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error(error);
+      continue;
     }
-  };
+    console.log("Inserted Habit:", newHabit);
+    createdCount++;
+
+  
+
+   
+  }
+
+   const { data } = await supabase
+  .from("habits")
+  .select(`
+    id,
+    name,
+    scheduled_time,
+    created_at,
+    habit_logs (
+      id,
+      date,
+      is_complete,
+      completed_time
+    )
+  `)
+  .eq("user_id", user.id)
+  .order("created_at", { ascending: false });
+
+localStorage.setItem("habits", JSON.stringify(data || []));
+return createdCount;
+};
+
+const handleCreateHabits = async () => {
+  if (creatingRef.current) return;
+
+  creatingRef.current = true;
+  setCreating(true);
+
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const createdCount = await createHabitsInBackground();
+
+    if (createdCount > 0) {
+      await Swal.fire({
+        icon: "success",
+        title: "🎉 Habits Created!",
+        text: "Your habits are ready to track.",
+        width: 550,
+        padding: "2rem",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      navigate("/tracker");
+    }
+  } finally {
+    creatingRef.current = false;
+    setCreating(false);
+  }
+};
 
 const addCustomHabit = async (): Promise<void> => {
+  const label = newHabit.label?.trim();
+const description = newHabit.description?.trim();
+
+if (!label || !description) {
+  return;
+}
   if (newHabit.label && newHabit.description && newHabit.image) {
+    const label = newHabit.label.trim();
+
+const exists = habits.some(
+  (h) => h.label.toLowerCase() === label.toLowerCase()
+);
+
+if (exists) {
+  await Swal.fire({
+    icon: "warning",
+    title: "Habit Already Exists",
+    text: "Choose another habit name.",
+    confirmButtonColor: "#22c55e",
+  });
+
+  return;
+}
     const customHabit: Habit = {
       label: newHabit.label,
       description: newHabit.description,
@@ -248,8 +446,8 @@ const addCustomHabit = async (): Promise<void> => {
   .from("user_habits")
   .insert({
     user_id: user.id,
-    label: customHabit.label,
-    description: customHabit.description,
+    label: customHabit.label.trim(),
+description: customHabit.description.trim(),
     image: customHabit.image,
     gradient: customHabit.gradient,
     color: customHabit.color,
@@ -285,7 +483,18 @@ const addCustomHabit = async (): Promise<void> => {
 };
 
 
+
+
 const removeCustomHabit = async (habitIndex: number) => {
+  const result = await Swal.fire({
+  title: "Delete Habit?",
+  text: "This cannot be undone.",
+  icon: "warning",
+  showCancelButton: true,
+});
+
+if (!result.isConfirmed) return;
+
   const habit = habits[habitIndex];
 
   if (!habit.isCustom) return;
@@ -346,6 +555,7 @@ const removeCustomHabit = async (habitIndex: number) => {
     }),
   };
 
+  const orbitRadius = isMobile ? 105 : 150;
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-black">
       {/* Premium Background with Animated Gradients */}
@@ -411,8 +621,9 @@ const removeCustomHabit = async (habitIndex: number) => {
           </motion.p>
         </motion.div>
 
-        {/* Circle Container */}
-        <div className="relative flex items-center justify-center flex-1 w-full max-w-md mx-auto my-2 sm:my-3">
+  
+       {/* Circle Container */}
+<div className="relative flex items-center justify-center flex-1 w-full max-w-md mx-auto mt-12 mb-10">
           {/* Premium Dark Glow */}
           <motion.div
             className={`absolute rounded-full bg-gradient-to-r ${active.gradient} opacity-10 blur-2xl`}
@@ -490,22 +701,76 @@ const removeCustomHabit = async (habitIndex: number) => {
                 exit="exit"
                 className="absolute inset-0"
               >
-                <div  className="relative w-full h-full cursor-pointer z-50"
-                   onClick={() => {
-    console.log("image clicked");
-    toggleHabit(index);
-  }}
+       <motion.div
+  whileHover="hover"
+  initial="rest"
+  animate="rest"
+  onClick={() => toggleHabit(index)}
+  className="group relative w-full h-full cursor-pointer overflow-hidden"
+>
+  {/* Image */}
+  <motion.img
+    src={active.image}
+    alt={active.label}
+    variants={{
+      rest: {
+        scale: 1,
+        filter: "blur(0px)",
+      },
+      hover: {
+        scale: 1.08,
+        filter: "blur(6px)",
+      },
+    }}
+    transition={{ duration: 0.3 }}
+    className={`object-contain drop-shadow-2xl w-full h-full ${
+      isMobile ? "p-4" : "p-6"
+    }`}
+  />
 
-                >
+  {/* Overlay */}
+  <motion.div
+    variants={{
+      rest: {
+        opacity: 0,
+      },
+      hover: {
+        opacity: 1,
+      },
+    }}
+    transition={{ duration: 0.25 }}
+    className="absolute inset-0 bg-black/45 backdrop-blur-[1px] flex flex-col items-center justify-center"
+  >
+    <motion.div
+      variants={{
+        rest: {
+          scale: 0.8,
+          y: 10,
+          opacity: 0,
+        },
+        hover: {
+          scale: 1,
+          y: 0,
+          opacity: 1,
+        },
+      }}
+      transition={{ duration: 0.25 }}
+      className="flex flex-col items-center gap-3"
+    >
+      <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
+        <span className="text-3xl text-white"> {selectedHabits.includes(index) ? "−" : "+"}</span>
+      </div>
 
-                  <Image
-                    src={active.image}
-                    alt={active.label}
-                    className={`object-contain drop-shadow-2xl w-full h-full ${
-                      isMobile ? "p-4" : "p-6"
-                    }`}
-                  />
-                </div>
+      <span className="text-white font-semibold text-lg tracking-wide">
+          {selectedHabits.includes(index)
+    ? "Click to Remove"
+    : "Click to Add"}
+      </span>
+    </motion.div>
+  </motion.div>
+</motion.div>
+
+
               </motion.div>
   </AnimatePresence>
 )}
@@ -552,6 +817,8 @@ const removeCustomHabit = async (habitIndex: number) => {
             <div className="absolute inset-0 rounded-full border border-white/5 pointer-events-none" />
           </div>
 
+          
+
           {/* Subtle Orbiting Dots */}
           <motion.div
             className="absolute rounded-full pointer-events-none"
@@ -565,16 +832,18 @@ const removeCustomHabit = async (habitIndex: number) => {
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
           >
          
-            {[...Array(isMobile ? 6 : 8)].map((_, i: number) => (
+{[...Array(isMobile ? 6 : 8)].map((_, i) => (
   <div
     key={i}
     className="absolute w-2 h-2 rounded-full bg-white/20"
     style={{
       top: "50%",
       left: "50%",
-      transform: `translate(-50%, -50%) rotate(${
-        i * (isMobile ? 60 : 45)
-      }deg) translateX(${isMobile ? "132px" : "150px"})`,
+      transform: `
+        translate(-50%, -50%)
+        rotate(${i * (isMobile ? 60 : 45)}deg)
+        translateX(${orbitRadius}px)
+      `,
     }}
   />
 ))}
@@ -628,6 +897,7 @@ const removeCustomHabit = async (habitIndex: number) => {
                     strokeWidth={2.5}
                     d="M5 13l4 4L19 7"
                   />
+                  
                 </motion.svg>
               ) : (
                 <svg
@@ -710,6 +980,123 @@ const removeCustomHabit = async (habitIndex: number) => {
               </span>
             </motion.div>
           )}
+
+          {selectedHabits.includes(index) && (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="mt-3 w-full max-w-[260px] mx-auto"
+  >
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+  <TimePicker
+    value={habitTimes[index] || dayjs()}
+    onChange={(newValue) =>
+      setHabitTimes((prev) => ({
+        ...prev,
+        [index]: newValue,
+      }))
+    }
+    timeSteps={{ minutes: 1 }}
+    slotProps={{
+      textField: {
+        fullWidth: true,
+        sx: {
+          "& .MuiSvgIcon-root": {
+            color: "#4ade80",
+          },
+
+          backgroundColor: "rgba(255,255,255,0.08)",
+          backdropFilter: "blur(12px)",
+          borderRadius: "14px",
+
+          "& .MuiInputBase-root": {
+            height: "55px",
+            color: "#fff",
+          },
+
+          "& .MuiOutlinedInput-root": {
+            backgroundColor: "rgba(255,255,255,0.08)",
+
+            "& fieldset": {
+              borderColor: "rgba(74,222,128,0.3)",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#4ade80",
+            },
+
+            "&.Mui-focused fieldset": {
+              borderColor: "#4ade80",
+              boxShadow:
+                "0 0 12px rgba(74,222,128,0.4)",
+            },
+          },
+
+          // 🔥 Time Text Color
+          "& input": {
+            color: "#ffffff !important",
+            WebkitTextFillColor:
+              "#ffffff !important",
+            textAlign: "center",
+            fontWeight: 600,
+            fontSize: "16px",
+          },
+
+          "& .MuiInputBase-input": {
+            color: "#ffffff !important",
+            WebkitTextFillColor:
+              "#ffffff !important",
+          },
+
+          "& .MuiPickersSectionList-root": {
+            color: "#ffffff !important",
+          },
+
+          "& .MuiPickersSectionList-root span": {
+            color: "#ffffff !important",
+          },
+
+          "& .MuiPickersInputBase-sectionsContainer": {
+            color: "#ffffff !important",
+          },
+        },
+      },
+
+      // Mobile Clock Dialog
+      dialog: {
+        sx: {
+          "& .MuiClockNumber-root": {
+            color: "#4ade80 !important",
+          },
+
+          "& .Mui-selected": {
+            backgroundColor:
+              "#4ade80 !important",
+            color: "#000 !important",
+          },
+
+          "& .MuiClockPointer-root": {
+            backgroundColor:
+              "#4ade80 !important",
+          },
+
+          "& .MuiClockPointer-thumb": {
+            borderColor:
+              "#4ade80 !important",
+            backgroundColor:
+              "#4ade80 !important",
+          },
+
+          "& .MuiTypography-root": {
+            color: "#4ade80 !important",
+          },
+        },
+      },
+    }}
+  />
+</LocalizationProvider>
+  </motion.div>
+)}
         </div>
 
         {/* Navigation */}
@@ -733,10 +1120,13 @@ const removeCustomHabit = async (habitIndex: number) => {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
+
+            
           </motion.button>
 
           {/* Indicator Dots */}
-          <div className="flex gap-1.5">
+          {/* <div className="flex gap-1.5"> */}
+          <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap px-2 no-scrollbar max-w-[280px] sm:max-w-[420px]">
             {habits.map((habit: Habit, i: number) => (
               <motion.button
                 key={i}
@@ -745,19 +1135,24 @@ const removeCustomHabit = async (habitIndex: number) => {
                   setIndex(i);
                 }}
                 whileHover={{ scale: 1.2 }}
-                className="relative"
+                // className="relative"
+                className="relative flex-shrink-0"
               >
                 <div
                   className={`h-1.5 rounded-full transition-all duration-300 ${
                     i === index
                       ? `w-4 sm:w-5 bg-gradient-to-r ${habit.gradient}`
-                      : "w-1.5 bg-white/30 hover:bg-white/50"
+                       : habit.isCustom
+      ? "w-1.5 bg-purple-500"
+      : "w-1.5 bg-white/50"
+                    
                   }`}
                 />
               
-                {habit.isCustom && (
+                {/* {habit.isCustom && (
                   <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full" />
-                )}
+                )} */}
+                
               </motion.button>
             ))}
             {/* Add Custom Habit Button - Add to navigation */}
@@ -813,7 +1208,7 @@ const removeCustomHabit = async (habitIndex: number) => {
             transition={{ delay: 0.4 }}
           >
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-xs font-medium text-gray-400">Progress</span>
+              <span className="text-xs font-medium text-gray-400">Habits</span>
               <span className="text-xs font-semibold text-white">
                 {selectedHabits.length}{" "}
                 <span className="text-gray-400">/ {habits.length}</span>
@@ -831,7 +1226,7 @@ const removeCustomHabit = async (habitIndex: number) => {
               >
                 <motion.div
                   className="absolute inset-0 bg-white/30"
-                  animate={{ x: ["-100%", "100%"] }}
+                  animate={{ x: ["-100%", "0%"] }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
                 />
               </motion.div>
@@ -841,6 +1236,13 @@ const removeCustomHabit = async (habitIndex: number) => {
             <AnimatePresence mode="wait">
               {selectedHabits.length > 0 ? (
                 <motion.button
+disabled={
+  creating ||
+  creatingRef.current ||
+  selectedHabits.length === 0 ||
+  selectedHabits.some((i) => !habitTimes[i])
+}
+                 onClick={handleCreateHabits}
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
@@ -848,7 +1250,9 @@ const removeCustomHabit = async (habitIndex: number) => {
                   whileTap={{ scale: 0.98 }}
                   className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-2 rounded-lg font-semibold text-sm shadow-lg shadow-green-500/20 hover:shadow-green-500/40 transition-all duration-300 flex items-center justify-center gap-2"
                 >
-                  <span>Set Time</span>
+                  <span>
+  {creating ? "Creating Habits..." : "Create Habits"}
+</span>
                   <motion.svg
                     className="w-4 h-4"
                     fill="none"
