@@ -18,7 +18,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { getLocalDate } from "../../lib/date";
+
 
 import Swal from "sweetalert2";
 interface Habit {
@@ -112,16 +112,7 @@ const defaultHabits: Habit[] = [
   },
 ];
 
-interface ImageProps {
-  src: string;
-  alt: string;
-  className?: string;
-  style?: React.CSSProperties;
-}
 
-const Image: React.FC<ImageProps> = ({ src, alt, className, style }) => {
-  return <img src={src} alt={alt} className={className} style={style} />;
-};
 
 
 

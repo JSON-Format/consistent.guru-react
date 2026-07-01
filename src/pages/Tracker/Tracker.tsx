@@ -4,7 +4,6 @@ import ActivityCard from "../../components/activityCard";
 import DeleteModal from "../../components/deleteModal";
 import { useEffect } from "react";
 import { supabase } from "../../lib/client";
-import Loader from "../../components/appLoader"
 import { useNavigate } from "react-router-dom";
 import { getLocalDate } from "../../lib/date";
 import { isTimeValid } from "../../lib/time";
@@ -89,7 +88,7 @@ useEffect(() => {
     }
 
     // 🔄 2. FETCH LATEST DATA
-    const data = await reloadData();
+    await reloadData();
 
     // 🔥 VERY IMPORTANT (fix your bug)
     setLoading(false);
@@ -174,7 +173,7 @@ const confirmDelete = async () => {
 
 localStorage.removeItem("habits"); // first clear
 
-const data = await reloadData(); // fetch
+await reloadData(); // fetch
 
 // 🔥 IMPORTANT CHECK
 // if (!data || data.length === 0) {
