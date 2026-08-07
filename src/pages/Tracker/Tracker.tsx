@@ -16,6 +16,34 @@ import {
   Trophy,
 } from "lucide-react";
 
+
+import Meditating from "../../assets/guru-meditating.png";
+import Running from "../../assets/guru-running-new.png";
+import WakingUp from "../../assets/guru-waking-up.png";
+import EatingonTime from "../../assets/guru-eating.png";
+import Studying from "../../assets/guru-studying-new.png";
+import Planning from "../../assets/guru-planning-new.png";
+import Cleaning from "../../assets/guru-cleaning-new.png";
+import DrinkingWater from "../../assets/guru-drinking-water.png";
+import Sleeping from "../../assets/guru-sleeping.png";
+import Journaling from "../../assets/guru-journaling.png";
+import ScreenLimit from "../../assets/guru-screen-limit.png";
+
+
+const IMAGE_MAP: Record<string, string> = {
+  meditating: Meditating,
+  running: Running,
+  waking_up: WakingUp,
+  eating_on_time: EatingonTime,
+  studying: Studying,
+  planning: Planning,
+  cleaning: Cleaning,
+  drinking_water: DrinkingWater,
+  sleeping: Sleeping,
+  journaling: Journaling,
+  screen_limit: ScreenLimit,
+};
+
 interface HabitLog {
   id: string;
   date: string;
@@ -26,6 +54,7 @@ interface HabitLog {
 interface Activity {
   id: string;
   name: string;
+  image?: string;
   scheduled_time?: string;
   created_at?: string;
   habit_logs: HabitLog[];
@@ -52,6 +81,7 @@ const reloadData = async (): Promise<Activity[]> => {
   .select(`
     id,
     name,
+      image,
     scheduled_time,
     created_at,
     habit_logs (
@@ -305,9 +335,17 @@ if (loading) {
          <div className="flex items-start gap-4 w-full">
 
             {/* Icon */}
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
-    <Target className="h-7 w-7 text-emerald-500"/>
-</div> 
+   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 overflow-hidden">
+  <img
+  src={
+    habit.image && IMAGE_MAP[habit.image]
+      ? IMAGE_MAP[habit.image]
+      : Meditating
+  }
+  alt={habit.name}
+  className="w-10 h-10 object-contain"
+/>
+</div>
 
             {/* Text */}
             <div>

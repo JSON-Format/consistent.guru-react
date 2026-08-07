@@ -14,6 +14,32 @@ import {
   format,
 } from "date-fns";
 
+import Meditating from "../../assets/guru-meditating.png";
+import Running from "../../assets/guru-running-new.png";
+import WakingUp from "../../assets/guru-waking-up.png";
+import EatingonTime from "../../assets/guru-eating.png";
+import Studying from "../../assets/guru-studying-new.png";
+import Planning from "../../assets/guru-planning-new.png";
+import Cleaning from "../../assets/guru-cleaning-new.png";
+import DrinkingWater from "../../assets/guru-drinking-water.png";
+import Sleeping from "../../assets/guru-sleeping.png";
+import Journaling from "../../assets/guru-journaling.png";
+import ScreenLimit from "../../assets/guru-screen-limit.png";
+
+const IMAGE_MAP: Record<string, string> = {
+  meditating: Meditating,
+  running: Running,
+  waking_up: WakingUp,
+  eating_on_time: EatingonTime,
+  studying: Studying,
+  planning: Planning,
+  cleaning: Cleaning,
+  drinking_water: DrinkingWater,
+  sleeping: Sleeping,
+  journaling: Journaling,
+  screen_limit: ScreenLimit,
+};
+
 import { formatInTimeZone } from "date-fns-tz";
 
 
@@ -27,6 +53,7 @@ interface HabitLog {
 interface Activity {
   id: string;
   name: string;
+  image?: string;
   scheduled_time?: string;
   created_at?: string;
   habit_logs: HabitLog[];
@@ -239,9 +266,28 @@ const [hovered, setHovered] = useState<string | null>(null);
       <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <h2 className="text-xl sm:text-2xl font-bold text-foreground" style={{ fontFamily: "var(--font-display)" }}>
-              {activity.name}
-            </h2>
+            
+            <div className="flex items-center gap-3">
+  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden">
+    <img
+      src={IMAGE_MAP[activity.image ?? ""] ?? Meditating}
+      alt={activity.name}
+      className="w-10 h-10 object-contain"
+    />
+  </div>
+
+  <div>
+    <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+      {activity.name}
+    </h2>
+
+    <p className="text-xs text-muted-foreground flex items-center gap-1">
+      <Clock size={12} className="text-primary" />
+      {formatTime12(activity.scheduled_time)}
+    </p>
+  </div>
+</div>
+
             {/* <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary border border-primary/30">
               {level.emoji} {level.title}
             </span> */}
@@ -285,10 +331,7 @@ const [hovered, setHovered] = useState<string | null>(null);
 
 </div>
           </div>
-          <p className="text-xs text-muted-foreground flex items-center gap-1">
-            <Clock size={12} className="text-primary" />
-             {formatTime12(activity.scheduled_time)}
-          </p>
+        
         </div>
 
         <button

@@ -36,82 +36,96 @@ const defaultHabits: Habit[] = [
   {
     label: "Meditating",
     description: "Find inner peace through mindful breathing and presence",
-    image: Meditating,
+    image: "meditating",
     gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
     color: "#8B5CF6",
   },
   {
     label: "Running",
     description: "Build endurance and release endorphins with every stride",
-    image: Running,
+    image: "running",
     gradient: "from-cyan-500 via-blue-500 to-indigo-500",
     color: "#06B6D4",
   },
   {
     label: "Waking Up",
     description: "Rise with the sun and embrace the morning energy",
-    image: WakingUp,
+   image: "waking_up",
     gradient: "from-amber-500 via-orange-500 to-red-500",
     color: "#F59E0B",
   },
   {
     label: "Eating on Time",
     description: "Nourish your body with mindful, timely meals",
-    image: EatingonTime,
+    image: "eating_on_time",
     gradient: "from-emerald-500 via-green-500 to-teal-500",
     color: "#10B981",
   },
   {
     label: "Studying",
     description: "Expanding knowledge",
-    image: Studying,
+    image: "studying",
     gradient: "from-blue-500 via-indigo-500 to-purple-500",
     color: "#6366F1",
   },
   {
     label: "Planning",
     description: "Organizing the day",
-    image: Planning,
+    image: "planning",
     gradient: "from-orange-500 via-amber-500 to-yellow-500",
     color: "#F59E0B",
   },
   {
     label: "Cleaning",
     description: "Tidying the space",
-    image:Cleaning,
+    image:"cleaning",
     gradient: "from-green-500 via-emerald-500 to-teal-500",
     color: "#10B981",
   },
   {
     label: "Drinking Water",
     description: "Stay hydrated",
-    image: DrinkingWater,
+    image: "drinking_water",
     gradient: "from-sky-500 via-cyan-500 to-blue-500",
     color: "#0EA5E9",
   },
   {
     label: "Sleeping",
     description: "Rest and recover",
-    image: Sleeping,
+    image: "sleeping",
     gradient: "from-indigo-500 via-purple-500 to-pink-500",
     color: "#8B5CF6",
   },
   {
     label: "Journaling",
     description: "Reflect and write",
-    image:Journaling,
+    image:"journaling",
     gradient: "from-rose-500 via-pink-500 to-red-500",
     color: "#F43F5E",
   },
   {
     label: "Screen Limit",
     description: "Mindful tech usage",
-    image: ScreenLimit,
+    image: "screen_limit",
     gradient: "from-gray-500 via-slate-500 to-gray-700",
     color: "#6B7280",
   },
 ];
 
+
+const IMAGE_MAP: Record<string, string> = {
+  meditating: Meditating,
+  running: Running,
+  waking_up: WakingUp,
+  eating_on_time: EatingonTime,
+  studying: Studying,
+  planning: Planning,
+  cleaning: Cleaning,
+  drinking_water: DrinkingWater,
+  sleeping: Sleeping,
+  journaling: Journaling,
+  screen_limit: ScreenLimit,
+};
 
 
 
@@ -145,19 +159,19 @@ const navigate = useNavigate();
     { gradient: "from-indigo-500 via-purple-500 to-pink-500", color: "#6366F1" },
   ];
 
-  const customHabitImages = [
-    Meditating,
-    Running,
-    WakingUp,
-    EatingonTime,
-    Studying,
-    Planning,
-    Cleaning ,
-    DrinkingWater,
-    Sleeping ,
-    Journaling,
-    ScreenLimit,
-  ];
+const customHabitImages = [
+  { key: "meditating", image: Meditating },
+  { key: "running", image: Running },
+  { key: "waking_up", image: WakingUp },
+  { key: "eating_on_time", image: EatingonTime },
+  { key: "studying", image: Studying },
+  { key: "planning", image: Planning },
+  { key: "cleaning", image: Cleaning },
+  { key: "drinking_water", image: DrinkingWater },
+  { key: "sleeping", image: Sleeping },
+  { key: "journaling", image: Journaling },
+  { key: "screen_limit", image: ScreenLimit },
+];
 
   useEffect(() => {
     const checkMobile = () => {
@@ -319,6 +333,7 @@ usedTimes.add(selectedTime);
         user_id: user.id,
         name: habit.label,
         scheduled_time: selectedTime,
+        image: habit.image,
       })
       .select()
       .single();
@@ -340,6 +355,7 @@ usedTimes.add(selectedTime);
   .select(`
     id,
     name,
+     image,
     scheduled_time,
     created_at,
     habit_logs (
@@ -684,7 +700,8 @@ if (!result.isConfirmed) return;
   <AnimatePresence mode="wait" custom={direction}>
      <motion.div
               
-                key={active.image}
+                // key={active.image}
+                 key={`${index}-${active.label}`}
                 custom={direction}
                 variants={variants}
                 initial="enter"
@@ -701,7 +718,7 @@ if (!result.isConfirmed) return;
 >
   {/* Image */}
   <motion.img
-    src={active.image}
+     src={IMAGE_MAP[active.image ?? ""] || Meditating}
     alt={active.label}
     variants={{
       rest: {
@@ -864,7 +881,13 @@ if (!result.isConfirmed) return;
             </motion.h2>
 
             <motion.button
-              onClick={() => toggleHabit(index)}
+  onClick={() => {
+    if (isCustomHabitCard) {
+      setShowAddModal(true);
+    } else {
+      toggleHabit(index);
+    }
+  }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               className={`relative w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0 ${
@@ -1333,19 +1356,28 @@ disabled={
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-1">Choose Image</label>
                   <div className="grid grid-cols-4 gap-2">
-                    {customHabitImages.slice(0, 8).map((img) => (
-                      <button
-                        key={img}
-                        onClick={() => setNewHabit({ ...newHabit, image: img })}
-                        className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                          newHabit.image === img
-                            ? "border-purple-500 shadow-lg shadow-purple-500/30"
-                            : "border-white/10 hover:border-white/30"
-                        }`}
-                      >
-                        <img src={img} alt="Habit" className="w-full h-full object-cover" />
-                      </button>
-                    ))}
+                  {customHabitImages.slice(0, 8).map((item) => (
+  <button
+    key={item.key}
+    onClick={() =>
+      setNewHabit({
+        ...newHabit,
+        image: item.key,
+      })
+    }
+    className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+      newHabit.image === item.key
+        ? "border-purple-500 shadow-lg shadow-purple-500/30"
+        : "border-white/10 hover:border-white/30"
+    }`}
+  >
+    <img
+      src={item.image}
+      alt="Habit"
+      className="w-full h-full object-cover"
+    />
+  </button>
+))}
                   </div>
                 </div>
 

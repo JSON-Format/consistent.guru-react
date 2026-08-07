@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppToaster } from "./components/appToast";
+import Footer from "./components/footer";
+
 function App() {
 
     const location = useLocation();
@@ -22,6 +24,16 @@ function App() {
     }
   }, []);
 
+  const showFooterRoutes = [
+  "/tracker",
+  "/privacy-Policy",
+  "/support",
+  "/privacy",
+  "/terms-and-conditions",
+];
+
+const showFooter = showFooterRoutes.includes(location.pathname);
+
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -33,7 +45,10 @@ function App() {
       <div className="flex-1 flex items-center justify-center lg:overflow-hidden">
         <AppRoutes />
         <AppToaster />
+
       </div>
+
+  {showFooter && <Footer />}
 
     </div>
   );

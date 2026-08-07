@@ -18,6 +18,9 @@ import HabitComplete from "../pages/HabitComplete";
 import Tracker from "../pages/Tracker";
 import WhyWeBuiltThis from "../pages/WhyWeBuiltThis"
 import Levels from "../pages/level";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import Support from "../pages/Support";
+import TermsAndConditions from "../pages/TermsAndConditions";
 
 
 export default function AppRoutes() {
@@ -36,6 +39,22 @@ export default function AppRoutes() {
   path="level"
   element={<Levels />}
 />
+
+<Route
+  path="Privacy-Policy"
+  element={<PrivacyPolicy/>}
+/>
+
+<Route
+  path="support"
+  element={<Support />}
+/>
+
+<Route
+  path="terms-and-conditions"
+  element={<TermsAndConditions/>}
+/>
+
 
 
 

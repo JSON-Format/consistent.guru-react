@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { LogIn, User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/client";
-import logo from "../../assets/guru-meditate.png";
+import logo from "../../assets/gurus.png";
 export default function AppNavbar() {
   const [user, setUser] = useState<any>(null);
   const [open, setOpen] = useState(false);
