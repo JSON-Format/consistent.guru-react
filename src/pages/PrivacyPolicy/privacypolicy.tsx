@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import guru from "../../assets/guru-consistency.png";
 
 const PrivacyPolicy: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<string>("");
+  const [, setActiveSection] = useState<string>("");
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {

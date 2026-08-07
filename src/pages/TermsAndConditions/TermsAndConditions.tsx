@@ -13,25 +13,23 @@ import {
   CheckCircle, 
   ChevronDown,
   Sparkles,
-  ArrowRight,
+
   Clock,
   Scale,
   BookOpen,
   AlertTriangle,
   Send,
-  Target,
+ 
   MessageCircle,
   Globe,
   Users,
   Edit,
-  Bell,
+ 
   Database,
   Code,
-  Briefcase,
+
   Home,
-  CreditCard,
-  HelpCircle,
-  LifeBuoy
+  
 } from "lucide-react";
 
 const TermsAndConditions: React.FC = () => {
