@@ -2,7 +2,9 @@ import { motion } from "framer-motion";
 import logo from "../../assets/guru-consistency.png";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/client";
+import Footer from "../../components/footer"
 import {  
+
   Sparkles,
   Clock,
   ChevronRight,
@@ -13,7 +15,8 @@ function HomePage() {
 
 
   return (
-    <div className="h-[calc(100vh-72px)]  w-full bg-gradient-to-br from-background via-background to-primary/5 relative overflow-hidden">
+    <div className="w-full bg-gradient-to-br from-background via-background to-primary/5 relative">
+    {/* // <div className="h-[calc(100vh-72px)]  w-full bg-gradient-to-br from-background via-background to-primary/5 relative overflow-hidden"> */}
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
@@ -44,7 +47,8 @@ function HomePage() {
       </div>
 
       {/* Main Content - Full Width */}
-<div className="relative w-full h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">        
+{/* <div className="relative w-full h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">         */}
+<div className="relative w-full min-h-[calc(100vh-72px)] flex items-center justify-center px-4 sm:px-6 lg:px-8">
         {/* Hero Section - Full Width */}
         <div className="flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-8 lg:gap-16 xl:gap-16 w-full max-w-7xl mx-auto">
           
@@ -196,6 +200,117 @@ function HomePage() {
           </motion.div>
         </div>
       </div>
+            {/* App Information Section */}
+      <section className="relative w-full px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+        <div className="max-w-6xl mx-auto">
+
+          {/* App Purpose */}
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-5">
+              Build Better Habits with Consistent Guru
+            </h2>
+
+            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
+              Consistent Guru is a habit tracking app designed to help you
+              build positive daily routines and stay consistent. Create and
+              customize habits, schedule them, track your daily progress,
+              maintain streaks, and see your consistency improve over time.
+            </p>
+          </div>
+
+          {/* Features */}
+          <div className="mb-16">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center text-foreground mb-8">
+              What You Can Do with Consistent Guru
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+              <div className="p-6 rounded-2xl border border-border bg-card/60">
+                <h3 className="font-semibold text-lg text-foreground mb-2">
+                  Create & Customize Habits
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Create habits that match your personal goals and daily
+                  routines.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl border border-border bg-card/60">
+                <h3 className="font-semibold text-lg text-foreground mb-2">
+                  Schedule Your Habits
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Set schedules and times to help you stay consistent with
+                  your daily habits.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl border border-border bg-card/60">
+                <h3 className="font-semibold text-lg text-foreground mb-2">
+                  Track Daily Progress
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Track completed and missed habits and monitor your daily
+                  progress.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl border border-border bg-card/60">
+                <h3 className="font-semibold text-lg text-foreground mb-2">
+                  Build Streaks
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Maintain daily streaks and stay motivated to continue your
+                  routines.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl border border-border bg-card/60">
+                <h3 className="font-semibold text-lg text-foreground mb-2">
+                  View Your History
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Review your completed and missed habits using your habit
+                  history and calendar.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl border border-border bg-card/60">
+                <h3 className="font-semibold text-lg text-foreground mb-2">
+                  Level Up Your Consistency
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Progress through levels as you build stronger and more
+                  consistent daily habits.
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Google Sign-In / Data Usage */}
+          <div className="max-w-4xl mx-auto p-6 sm:p-8 rounded-2xl border border-primary/20 bg-primary/5">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-4 text-center">
+              Why We Use Google Sign-In
+            </h2>
+
+            <p className="text-muted-foreground text-sm sm:text-base leading-relaxed text-center">
+              Consistent Guru uses Google Sign-In to securely authenticate
+              users and provide access to their Consistent Guru account.
+              When you choose to sign in with Google, we may receive basic
+              account information such as your name, email address, and
+              profile information to identify and manage your account.
+              We use this information to provide account-related
+              functionality and do not sell Google user data.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+
+      <Footer/>
     </div>
   );
 }
