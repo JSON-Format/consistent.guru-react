@@ -142,13 +142,21 @@ function HomePage() {
             
             {/* Heading */}
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-6 md:mb-0" style={{ fontFamily: "var(--font-display)" }}>
-              <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
+              {/* <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
                 Stay Consistent
               </span>
               <br />
               <span className="text-foreground ">
                 Become <br /> Unstoppable
-              </span>
+              </span> */}
+
+              <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
+  Build Better Habits
+</span>
+<br />
+<span className="text-foreground">
+  Stay Consistent
+</span>
             </h1>
             
             {/* Description - Hidden on mobile, visible on tablet+ */}
@@ -158,13 +166,13 @@ function HomePage() {
               <span className="text-primary/80 text-xs md:text-sm lg:text-base">Show up every day — no excuses.</span>
             </p> */}
 
-            <p className="hidden sm:block text-sm md:text-base lg:text-lg xl:text-xl text-muted-foreground mt-2 md:mt-3 lg:mt-4 mb-4 md:mb-6 lg:mb-8 max-w-md md:max-w-lg lg:max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+<p className="text-sm md:text-base lg:text-lg xl:text-xl text-muted-foreground mt-2 md:mt-3 lg:mt-4 mb-4 md:mb-6 lg:mb-8 max-w-md md:max-w-lg lg:max-w-2xl mx-auto lg:mx-0 leading-relaxed">
   Consistent Guru is a habit tracking app that helps you create,
-  schedule, and track daily habits, maintain streaks, and monitor
-  your progress over time.
+  customize, schedule, and track daily habits. Build streaks,
+  monitor your progress, and develop better daily routines.
   <br />
   <span className="text-primary/80 text-xs md:text-sm lg:text-base">
-    Build better routines and stay consistent every day.
+    Create habits. Stay consistent. Become unstoppable.
   </span>
 </p>
             
