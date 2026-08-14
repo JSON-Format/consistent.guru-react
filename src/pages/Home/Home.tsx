@@ -18,7 +18,7 @@ function HomePage() {
     <div className="w-full bg-gradient-to-br from-background via-background to-primary/5 relative">
     {/* // <div className="h-[calc(100vh-72px)]  w-full bg-gradient-to-br from-background via-background to-primary/5 relative overflow-hidden"> */}
       {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/5 rounded-full filter blur-3xl animate-pulse delay-2000"></div>
@@ -152,11 +152,21 @@ function HomePage() {
             </h1>
             
             {/* Description - Hidden on mobile, visible on tablet+ */}
-            <p className="hidden sm:block text-sm md:text-base lg:text-lg xl:text-xl text-muted-foreground mt-2 md:mt-3 lg:mt-4 mb-4 md:mb-6 lg:mb-8 max-w-md md:max-w-lg lg:max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+            {/* <p className="hidden sm:block text-sm md:text-base lg:text-lg xl:text-xl text-muted-foreground mt-2 md:mt-3 lg:mt-4 mb-4 md:mb-6 lg:mb-8 max-w-md md:max-w-lg lg:max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               Small actions repeated daily create powerful results.
               <br />
               <span className="text-primary/80 text-xs md:text-sm lg:text-base">Show up every day — no excuses.</span>
-            </p>
+            </p> */}
+
+            <p className="hidden sm:block text-sm md:text-base lg:text-lg xl:text-xl text-muted-foreground mt-2 md:mt-3 lg:mt-4 mb-4 md:mb-6 lg:mb-8 max-w-md md:max-w-lg lg:max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+  Consistent Guru is a habit tracking app that helps you create,
+  schedule, and track daily habits, maintain streaks, and monitor
+  your progress over time.
+  <br />
+  <span className="text-primary/80 text-xs md:text-sm lg:text-base">
+    Build better routines and stay consistent every day.
+  </span>
+</p>
             
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 w-full sm:w-auto justify-center lg:justify-start">
