@@ -2,9 +2,7 @@ import { motion } from "framer-motion";
 import logo from "../../assets/guru-consistency.png";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/client";
-import Footer from "../../components/footer"
 import {  
-
   Sparkles,
   Clock,
   ChevronRight,
