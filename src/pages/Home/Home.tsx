@@ -142,39 +142,23 @@ function HomePage() {
             
             {/* Heading */}
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-6 md:mb-0" style={{ fontFamily: "var(--font-display)" }}>
-              {/* <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
                 Stay Consistent
               </span>
               <br />
               <span className="text-foreground ">
                 Become <br /> Unstoppable
-              </span> */}
-
-              <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-  Build Better Habits
-</span>
-<br />
-<span className="text-foreground">
-  Stay Consistent
-</span>
+              </span>
             </h1>
             
             {/* Description - Hidden on mobile, visible on tablet+ */}
-            {/* <p className="hidden sm:block text-sm md:text-base lg:text-lg xl:text-xl text-muted-foreground mt-2 md:mt-3 lg:mt-4 mb-4 md:mb-6 lg:mb-8 max-w-md md:max-w-lg lg:max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="hidden sm:block text-sm md:text-base lg:text-lg xl:text-xl text-muted-foreground mt-2 md:mt-3 lg:mt-4 mb-4 md:mb-6 lg:mb-8 max-w-md md:max-w-lg lg:max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               Small actions repeated daily create powerful results.
               <br />
               <span className="text-primary/80 text-xs md:text-sm lg:text-base">Show up every day — no excuses.</span>
-            </p> */}
+            </p>
 
-<p className="text-sm md:text-base lg:text-lg xl:text-xl text-muted-foreground mt-2 md:mt-3 lg:mt-4 mb-4 md:mb-6 lg:mb-8 max-w-md md:max-w-lg lg:max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-  Consistent Guru is a habit tracking app that helps you create,
-  customize, schedule, and track daily habits. Build streaks,
-  monitor your progress, and develop better daily routines.
-  <br />
-  <span className="text-primary/80 text-xs md:text-sm lg:text-base">
-    Create habits. Stay consistent. Become unstoppable.
-  </span>
-</p>
+
             
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 w-full sm:w-auto justify-center lg:justify-start">
@@ -218,117 +202,7 @@ function HomePage() {
           </motion.div>
         </div>
       </div>
-            {/* App Information Section */}
-      <section className="relative w-full px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        <div className="max-w-6xl mx-auto">
 
-          {/* App Purpose */}
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-5">
-              Build Better Habits with Consistent Guru
-            </h2>
-
-            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-              Consistent Guru is a habit tracking app designed to help you
-              build positive daily routines and stay consistent. Create and
-              customize habits, schedule them, track your daily progress,
-              maintain streaks, and see your consistency improve over time.
-            </p>
-          </div>
-
-          {/* Features */}
-          <div className="mb-16">
-            <h2 className="text-2xl sm:text-3xl font-bold text-center text-foreground mb-8">
-              What You Can Do with Consistent Guru
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-
-              <div className="p-6 rounded-2xl border border-border bg-card/60">
-                <h3 className="font-semibold text-lg text-foreground mb-2">
-                  Create & Customize Habits
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Create habits that match your personal goals and daily
-                  routines.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-2xl border border-border bg-card/60">
-                <h3 className="font-semibold text-lg text-foreground mb-2">
-                  Schedule Your Habits
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Set schedules and times to help you stay consistent with
-                  your daily habits.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-2xl border border-border bg-card/60">
-                <h3 className="font-semibold text-lg text-foreground mb-2">
-                  Track Daily Progress
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Track completed and missed habits and monitor your daily
-                  progress.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-2xl border border-border bg-card/60">
-                <h3 className="font-semibold text-lg text-foreground mb-2">
-                  Build Streaks
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Maintain daily streaks and stay motivated to continue your
-                  routines.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-2xl border border-border bg-card/60">
-                <h3 className="font-semibold text-lg text-foreground mb-2">
-                  View Your History
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Review your completed and missed habits using your habit
-                  history and calendar.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-2xl border border-border bg-card/60">
-                <h3 className="font-semibold text-lg text-foreground mb-2">
-                  Level Up Your Consistency
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Progress through levels as you build stronger and more
-                  consistent daily habits.
-                </p>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Google Sign-In / Data Usage */}
-          <div className="max-w-4xl mx-auto p-6 sm:p-8 rounded-2xl border border-primary/20 bg-primary/5">
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-4 text-center">
-              Why We Use Google Sign-In
-            </h2>
-
-            <p className="text-muted-foreground text-sm sm:text-base leading-relaxed text-center">
-              Consistent Guru uses Google Sign-In to securely authenticate
-              users and provide access to their Consistent Guru account.
-              When you choose to sign in with Google, we may receive basic
-              account information such as your name, email address, and
-              profile information to identify and manage your account.
-              We use this information to provide account-related
-              functionality and do not sell Google user data.
-            </p>
-          </div>
-
-        </div>
-      </section>
-
-
-      <Footer/>
     </div>
   );
 }
